@@ -1,11 +1,13 @@
 Pod::Spec.new do |s|
 
   s.name         = "VCBQRScanner"
-  s.version      = "1.0"
+  s.version      = "1.0.1"
   s.summary      = "Barcode&QRcode recognize"
 
   s.description  = <<-DESC
-                   DESC
+  1. Create a QRCode Scanner  simply.
+  2. Customize UI.
+  DESC
 
   s.homepage     = "https://github.com/txinhua/VCBQRScanner"
 
