@@ -225,8 +225,19 @@
 
 
 -(void)reSetMediaType{
+//    [self.session beginConfiguration];
+//    [self.session removeOutput:_output];
+    // 更改立即实现
+//    [self.session commitConfiguration];
+    
+//    [_output setMetadataObjectTypes:isQrflag?@[AVMetadataObjectTypeQRCode]:@[AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code]];
+    
+//    [self.session beginConfiguration];
+//    [self.session addOutput:_output];
+    // 更改立即实现
+//    [self.session commitConfiguration];
     [self pauseCamera];
-    [_output setMetadataObjectTypes:isQrflag?@[AVMetadataObjectTypeQRCode]:@[AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code]];
+    [_output setMetadataObjectTypes:isQrflag?@[AVMetadataObjectTypeQRCode]:@[AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code,AVMetadataObjectTypeCode39Code,AVMetadataObjectTypeCode39Mod43Code]];
     [self reStartCamera];
 }
 
@@ -318,7 +329,18 @@
     
     [_output setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
     
-    [_output setMetadataObjectTypes:isQrflag?@[AVMetadataObjectTypeQRCode]:@[AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code]];
+    [_output setMetadataObjectTypes:isQrflag?@[AVMetadataObjectTypeQRCode]:@[AVMetadataObjectTypeEAN13Code,
+         AVMetadataObjectTypeEAN8Code,
+         AVMetadataObjectTypeCode128Code,
+         AVMetadataObjectTypeCode39Code,
+         AVMetadataObjectTypeCode39Mod43Code,
+         AVMetadataObjectTypeUPCECode,
+         AVMetadataObjectTypeCode93Code,
+         AVMetadataObjectTypePDF417Code,
+         AVMetadataObjectTypeAztecCode,
+         AVMetadataObjectTypeInterleaved2of5Code,
+         AVMetadataObjectTypeITF14Code,
+         AVMetadataObjectTypeDataMatrixCode]];
     
     //设置只在小矩形框中获取到图像才有效，否则为无效
     CGSize size = self.bounds.size;
@@ -435,7 +457,20 @@
             // Check the QRCode metadata object type by default
 //            metadataObjectTypes = @[AVMetadataObjectTypeQRCode];
             
-            metadataObjectTypes =  @[AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code];
+            metadataObjectTypes =  @[AVMetadataObjectTypeQRCode,
+                                     AVMetadataObjectTypeEAN13Code,
+                                     AVMetadataObjectTypeEAN8Code,
+                                     AVMetadataObjectTypeCode128Code,
+                                     AVMetadataObjectTypeCode39Code,
+                                     AVMetadataObjectTypeCode39Mod43Code,
+                                     AVMetadataObjectTypeUPCECode,
+                                     AVMetadataObjectTypeCode93Code,
+                                     AVMetadataObjectTypePDF417Code,
+                                     AVMetadataObjectTypeAztecCode,
+                                     AVMetadataObjectTypeInterleaved2of5Code,
+                                     AVMetadataObjectTypeITF14Code,
+                                     AVMetadataObjectTypeDataMatrixCode
+                                     ];
             
         }
         
@@ -452,7 +487,7 @@
 #pragma mark - Managing the Block
 
 - (void)setCompletionWithBlock:(void (^) (NSString *resultAsString))completionBlock
-{   
+{
     self.completionBlock = completionBlock;
 }
 
@@ -462,9 +497,10 @@
 {
     for (AVMetadataObject *current in metadataObjects) {
         if ([current isKindOfClass:[AVMetadataMachineReadableCodeObject class]]
-            && [@[AVMetadataObjectTypeQRCode,AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code] containsObject:current.type]) {
+            ) {
             NSString *scannedResult = [(AVMetadataMachineReadableCodeObject *) current stringValue];
             if (_completionBlock) {
+                sucessTip.text = scannedResult;
                 _completionBlock(scannedResult);
             }
             [self showScannerSucessTip];
